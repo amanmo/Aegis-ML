@@ -36,7 +36,6 @@ class WakeUpVoiceDetector(Thread):
         data_stream = self.buffered_data + new_data 
         self.reset_data_buffer()
 
-        
         i = 0
         while i < len(data_stream):
             sub_data = data_stream[i:i+self.frame_size]
@@ -47,9 +46,8 @@ class WakeUpVoiceDetector(Thread):
             pcm = struct.unpack_from("h" *self.porcupine.frame_length, sub_data)
             result = self.porcupine.process(pcm)
             if result >= 0:
-                leftover = data_stream[i:]
                 self.reset_data_buffer()
-                return True, leftover
+                return True
             i += self.frame_size
         
         self.buffered_data = data_stream[i:]
